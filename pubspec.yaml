@@ -1,0 +1,48 @@
+name: empresas_radiofonicas
+title: "Empresas Radiofónicas"
+description: "Aplicacion oficial de reproduccion para Empresas Radiofonicas"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  webview_flutter: ^4.10.0 # O la versión estable más reciente
+  wakelock_plus: ^1.1.4
+  cupertino_icons: ^1.0.8
+  just_audio: ^0.9.36
+  just_audio_background: ^0.0.1-beta.17
+  audio_service: ^0.18.12
+  path_provider: ^2.1.6
+  http: ^1.2.0
+  url_launcher: ^6.3.2
+  permission_handler: ^11.3.1
+  video_player: ^2.13.0
+  chewie: ^1.14.1
+  font_awesome_flutter: ^11.0.0
+  share_plus: ^13.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logos/
+
+# Esta sección va al mismo nivel de 'flutter:' (pegada al borde izquierdo)
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logos/logo.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/logos/logo.png"
+
+    
