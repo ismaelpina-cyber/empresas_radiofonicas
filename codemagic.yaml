@@ -1,14 +1,13 @@
 workflows:
-  ios-release:
-    name: iOS Release
+  ios-debug-build:
+    name: iOS Debug Build
     max_build_duration: 60
     environment:
       flutter: stable
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Build IPA
-        script: |
-          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+      - name: Build App
+        script: flutter build ios --debug --no-codesign
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/iphoneos/Runner.app
