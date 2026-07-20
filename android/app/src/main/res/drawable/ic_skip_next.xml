@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Círculo de fondo estilizado -->
+    <path
+        android:fillColor="#E6FFFFFF"
+        android:pathData="M32,32m-28,0a28,28 0,1 1,56 0a28,28 0,1 1,-56 0" />
+
+    <!-- Flecha de Siguiente + Barra en Negro Puro -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M22,20v24l14,-12zM38,20h4v24h-4z" />
+</vector>

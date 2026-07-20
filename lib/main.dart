@@ -230,6 +230,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   // 1. AGREGA ESTA LÍNEA AQUÍ:
   Timer? _whatsappTimer;
+  bool _mostrarTextoWhatsapp = true;
   bool _mostrarWhatsApp =
       false; // Agrega esta también por si acaso no la habías declarado
 
@@ -824,6 +825,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void dispose() {
     // 1. Quitamos el observador de la app para que no gaste memoria
     WidgetsBinding.instance.removeObserver(this);
+    _whatsappTimer?.cancel();
 
     // 2. Apagamos la radio y liberamos los recursos de forma segura
     _apagarRadioYSalir();
@@ -1149,36 +1151,68 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 child: Padding(
                   padding: const EdgeInsets.only(
                     right: 16.0,
-                  ), // Alineación perfecta al borde de la pantalla
+                  ), // Margen limpio al borde de la pantalla
                   child: Center(
-                    child: Container(
-                      width: 42,
+                    // 🟢 La magia: Si '_mostrarTextoWhatsapp' es true mide 150 (óvalo), si es false mide 42 (tu círculo original)
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                      width: _mostrarTextoWhatsapp ? 150 : 42,
                       height: 42,
                       decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFF25D366), // El verde exacto de WhatsApp
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(21),
+                        ), // Mantiene los bordes redondeados en ambos estados
+                        color: Color(0xFF25D366), // Verde exacto de WhatsApp
                         boxShadow: [
                           BoxShadow(
-                            color: Colors
-                                .black38, // Sombra sutil para darle relieve premium
+                            color: Colors.black38, // Sombra sutil premium
                             blurRadius: 5,
                             offset: Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: ClipOval(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(21),
                         child: Material(
                           color: Colors.transparent,
-                          child: IconButton(
-                            padding: EdgeInsets.zero, // Centrado matemático
-                            // 🟢 ICONO OFICIAL DE WHATSAPP
-                            icon: const FaIcon(
-                              FontAwesomeIcons.whatsapp,
-                              color: Colors.white,
-                              size:
-                                  24, // El tamaño ideal para conservar un margen elegante
+                          child: InkWell(
+                            onTap:
+                                _abrirWhatsApp, // Tu función actual para abrir el enlace
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // 🟢 ICONO DE WHATSAPP (Siempre visible)
+                                  const FaIcon(
+                                    FontAwesomeIcons.whatsapp,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                  // 🟢 TEXTO ANIMADO (Aparece y desaparece suavemente)
+                                  AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 200),
+                                    opacity: _mostrarTextoWhatsapp ? 1.0 : 0.0,
+                                    child: _mostrarTextoWhatsapp
+                                        ? const Padding(
+                                            padding: EdgeInsets.only(left: 8.0),
+                                            child: Text(
+                                              "Pide tu música",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          )
+                                        : const SizedBox.shrink(), // No ocupa espacio cuando se oculta
+                                  ),
+                                ],
+                              ),
                             ),
-                            onPressed: _abrirWhatsApp,
                           ),
                         ),
                       ),
@@ -1850,15 +1884,28 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   } // Cierra el método Widget build
 
   void _activarWhatsAppTemporal() {
-    // 1. Si ya había un temporizador corriendo, lo cancelamos para reiniciar el conteo de 20 segundos
+    // 1. Si ya había un temporizador corriendo, lo cancelamos para reiniciar los conteos
     _whatsappTimer?.cancel();
 
-    // 2. Mostramos el botón inmediatamente
+    // 2. Mostramos el botón inmediatamente y forzamos a que nazca expandido con texto
     setState(() {
       _mostrarWhatsApp = true;
+      _mostrarTextoWhatsapp =
+          true; // 🟢 Nace expandido mostrando "Pide tu música"
     });
 
-    // 3. Programamos que se oculte automáticamente en 20 segundos
+    // 3. Programamos que el TEXTO se encoja automáticamente a los 6 segundos
+    Timer(const Duration(seconds: 6), () {
+      if (mounted && _mostrarWhatsApp) {
+        // Solo si el botón sigue visible
+        setState(() {
+          _mostrarTextoWhatsapp =
+              false; // 🟢 Se encoge suavemente a tu círculo original
+        });
+      }
+    });
+
+    // 4. Programamos que
     _whatsappTimer = Timer(const Duration(seconds: 20), () {
       if (mounted) {
         setState(() {
